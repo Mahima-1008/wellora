@@ -1,0 +1,62 @@
+/* Full page center */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: white;   /* white background */
+  font-family: Arial, sans-serif;
+}
+
+/* Login card */
+.auth-container {
+  width: 450px;
+  padding: 45px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 128, 128, 0.25); /* teal shadow */
+  text-align: center;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Heading */
+.auth-container h2 {
+  font-size: 30px;
+  margin-bottom: 25px;
+  color: #008080; /* teal */
+}
+
+/* Inputs */
+.auth-container input {
+  width: 100%;
+  padding: 14px;
+  margin: 14px 0;
+  border-radius: 8px;
+  border: 1px solid #008080;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Input focus */
+.auth-container input:focus {
+  border-color: #006666;
+}
+
+/* Login button */
+.auth-container button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 18px;
+  background: #008080;  /* teal */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.auth-container button:hover {
+  background: #006666;
+}
