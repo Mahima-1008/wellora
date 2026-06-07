@@ -1,33 +1,27 @@
-import { useState } from "react";
-import Login from "./Login";
-import Navbar from "./Navbar";
-import Products from "./Products";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
+import Home from "./pages/Home";
+import CategoryPage from "./pages/CategoryPage";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-
   return (
-    <div>
-      {!isLoggedIn ? (
-        <Login onLogin={() => setIsLoggedIn(true)} />
-      ) : (
-        <>
-          <Navbar
-            onLogout={() => setIsLoggedIn(false)}
-            onSearch={setSearchTerm}
-            onCategoryChange={setSelectedCategory}
-          />
+    <BrowserRouter>
+      <Navbar />
 
-          <Products
-            searchTerm={searchTerm}
-            selectedCategory={selectedCategory}
-            addToCart={(item) => console.log("Added to cart:", item)}
-          />
-        </>
-      )}
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+
+        <Route
+          path="/category/:category"
+          element={<CategoryPage />}
+        />
+      </Routes>
+
+      <Footer />
+    </BrowserRouter>
   );
 }
 
