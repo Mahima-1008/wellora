@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FiSearch, FiHeart, FiUser, FiMenu, FiShoppingBag, FiCalendar, FiHelpCircle, FiMessageSquare } from "react-icons/fi";
 import logo from "../assets/logo.jpeg";
 
-function Navbar({ onLogout, onSearch, onCategoryChange }) {
+function Navbar({ onLogout, onSearch, onCategoryChange, cartItemCount = 0 }) {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -140,7 +141,34 @@ function Navbar({ onLogout, onSearch, onCategoryChange }) {
           </div>
 
           <FiHeart style={{ cursor: "pointer", fontSize: "20px", color: "var(--text-primary)" }} />
-          <FiShoppingBag style={{ cursor: "pointer", fontSize: "20px", color: "var(--text-primary)" }} />
+          
+          {/* Cart Icon with Badge */}
+          <div 
+            onClick={() => navigate('/cart')} 
+            style={{ position: "relative", cursor: "pointer", display: "flex", alignItems: "center", padding: "5px" }}
+          >
+            <FiShoppingBag style={{ fontSize: "20px", color: "var(--text-primary)" }} />
+            {cartItemCount > 0 && (
+              <span style={{
+                position: "absolute",
+                top: "-2px",
+                right: "-2px",
+                background: "var(--accent-color)",
+                color: "white",
+                fontSize: "10px",
+                fontWeight: "bold",
+                width: "16px",
+                height: "16px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                {cartItemCount}
+              </span>
+            )}
+          </div>
+
           <FiUser style={{ cursor: "pointer", fontSize: "20px", color: "var(--text-primary)" }} />
 
           {onLogout && (

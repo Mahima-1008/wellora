@@ -1,35 +1,55 @@
 import { useState } from "react";
-import { FiArrowRight, FiCheckCircle } from "react-icons/fi";
+import { FiArrowRight, FiCheckCircle, FiLoader } from "react-icons/fi";
 
 function ProductQuiz() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [isCalculating, setIsCalculating] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
   const questions = [
     {
       id: "age",
       question: "Which life stage are you currently in?",
-      options: ["Teens (13-19)", "20s", "30s", "40s", "50+"]
+      options: [
+        { text: "Teens (13-19)", emoji: "🦋" },
+        { text: "20s", emoji: "✨" },
+        { text: "30s", emoji: "🌸" },
+        { text: "40s", emoji: "🌿" },
+        { text: "50+", emoji: "👑" }
+      ]
     },
     {
       id: "flow",
       question: "How would you describe your typical flow?",
-      options: ["Light", "Medium", "Heavy", "Variable"]
+      options: [
+        { text: "Light", emoji: "💧" },
+        { text: "Medium", emoji: "🌊" },
+        { text: "Heavy", emoji: "⛈️" },
+        { text: "Variable", emoji: "🎢" }
+      ]
     },
     {
       id: "preferences",
       question: "Any specific body or skin preferences?",
-      options: ["Very sensitive skin", "Prefer organic / eco-friendly", "No specific preference"]
+      options: [
+        { text: "Very sensitive skin", emoji: "🥺" },
+        { text: "Prefer organic / eco-friendly", emoji: "🌱" },
+        { text: "No specific preference", emoji: "🤷‍♀️" }
+      ]
     }
   ];
 
-  const handleOptionClick = (answer) => {
-    setAnswers({ ...answers, [questions[step].id]: answer });
+  const handleOptionClick = (answerText) => {
+    setAnswers({ ...answers, [questions[step].id]: answerText });
     if (step < questions.length - 1) {
       setTimeout(() => setStep(step + 1), 400);
     } else {
-      setTimeout(() => setShowResults(true), 400);
+      setIsCalculating(true);
+      setTimeout(() => {
+        setIsCalculating(false);
+        setShowResults(true);
+      }, 2500); // Fake calculating delay for suspense
     }
   };
 
@@ -37,7 +57,23 @@ function ProductQuiz() {
 
   return (
     <div style={{ padding: "60px 20px", maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
-      {!showResults ? (
+      
+      {isCalculating && !showResults && (
+        <div className="fade-in" style={{ padding: "100px 20px" }}>
+          <div style={{ 
+            width: "80px", height: "80px", margin: "0 auto 30px auto", 
+            border: "4px solid var(--border-light)", borderTop: "4px solid var(--accent-color)", 
+            borderRadius: "50%", animation: "spin 1s linear infinite" 
+          }}></div>
+          <h2 style={{ fontSize: "28px", color: "var(--text-primary)", marginBottom: "15px" }}>Curating Your Ritual...</h2>
+          <p style={{ color: "var(--text-secondary)", fontSize: "16px" }}>Analyzing your lifestyle to find the perfect matches ✨</p>
+          <style>{`
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+          `}</style>
+        </div>
+      )}
+
+      {!isCalculating && !showResults && (
         <div className="fade-in" key={step} style={{
           background: "var(--bg-secondary)",
           padding: "50px",
@@ -66,11 +102,11 @@ function ProductQuiz() {
           
           <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "15px" }}>
             {questions[step].options.map((opt, idx) => {
-              const isSelected = answers[questions[step].id] === opt;
+              const isSelected = answers[questions[step].id] === opt.text;
               return (
                 <button
                   key={idx}
-                  onClick={() => handleOptionClick(opt)}
+                  onClick={() => handleOptionClick(opt.text)}
                   style={{
                     padding: "20px 30px",
                     background: isSelected ? "var(--accent-color)" : "var(--bg-primary)",
@@ -99,14 +135,19 @@ function ProductQuiz() {
                     }
                   }}
                 >
-                  {opt}
+                  <span style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+                    <span style={{ fontSize: "24px" }}>{opt.emoji}</span>
+                    {opt.text}
+                  </span>
                   {isSelected && <FiCheckCircle size={22} />}
                 </button>
               );
             })}
           </div>
         </div>
-      ) : (
+      )}
+
+      {showResults && !isCalculating && (
         <div className="fade-in" style={{
           background: "var(--bg-secondary)",
           padding: "60px 40px",
@@ -130,29 +171,29 @@ function ProductQuiz() {
           }} />
 
           <div style={{ position: "relative", zIndex: 1 }}>
-            <h2 style={{ fontSize: "36px", marginBottom: "15px", color: "var(--text-primary)", fontWeight: "600" }}>Your Perfect Routine</h2>
+            <h2 style={{ fontSize: "36px", marginBottom: "15px", color: "var(--text-primary)", fontWeight: "600" }}>Your Perfect Routine 🎀</h2>
             <p style={{ color: "var(--text-secondary)", marginBottom: "40px", fontSize: "16px", maxWidth: "500px", margin: "0 auto 40px auto" }}>
-              We've crafted a personalized set of essentials designed specifically for your body and lifestyle.
+              Based on your unique profile ({answers.flow} flow, {answers.age}), we've crafted a personalized set of essentials designed specifically for your body.
             </p>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "25px", textAlign: "left", marginBottom: "50px" }}>
               <div style={{ padding: "25px", background: "rgba(255, 255, 255, 0.8)", backdropFilter: "blur(10px)", borderRadius: "20px", border: "1px solid var(--accent-light)", boxShadow: "var(--shadow-sm)" }}>
-                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>DAY CARE</span>
+                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>DAY CARE ☀️</span>
                 <p style={{ fontSize: "16px", color: "var(--text-primary)", fontWeight: "500" }}>Organic Cotton Pads</p>
                 <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "5px" }}>Medium Flow • Pack of 20</p>
               </div>
               <div style={{ padding: "25px", background: "rgba(255, 255, 255, 0.8)", backdropFilter: "blur(10px)", borderRadius: "20px", border: "1px solid var(--accent-light)", boxShadow: "var(--shadow-sm)" }}>
-                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>NIGHT CARE</span>
+                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>NIGHT CARE 🌙</span>
                 <p style={{ fontSize: "16px", color: "var(--text-primary)", fontWeight: "500" }}>Ultra-absorbent Overnights</p>
                 <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "5px" }}>Heavy Protection • Pack of 10</p>
               </div>
               <div style={{ padding: "25px", background: "rgba(255, 255, 255, 0.8)", backdropFilter: "blur(10px)", borderRadius: "20px", border: "1px solid var(--accent-light)", boxShadow: "var(--shadow-sm)" }}>
-                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>CLEANSE</span>
+                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>CLEANSE 🛁</span>
                 <p style={{ fontSize: "16px", color: "var(--text-primary)", fontWeight: "500" }}>pH Balanced Wash</p>
                 <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "5px" }}>Fragrance-free • 150ml</p>
               </div>
               <div style={{ padding: "25px", background: "rgba(255, 255, 255, 0.8)", backdropFilter: "blur(10px)", borderRadius: "20px", border: "1px solid var(--accent-light)", boxShadow: "var(--shadow-sm)" }}>
-                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>COMFORT</span>
+                <span style={{ display: "inline-block", padding: "6px 12px", background: "var(--accent-light)", color: "var(--accent-hover)", borderRadius: "20px", fontSize: "12px", fontWeight: "600", marginBottom: "15px" }}>COMFORT 🍵</span>
                 <p style={{ fontSize: "16px", color: "var(--text-primary)", fontWeight: "500" }}>Soothing Heat Patches</p>
                 <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginTop: "5px" }}>Natural relief • Pack of 3</p>
               </div>

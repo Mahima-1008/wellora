@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { FiShoppingBag, FiCheck } from "react-icons/fi";
 import { products } from "../data/products";
 
-function CategoryPage() {
+function CategoryPage({ cart, setCart }) {
   const { category } = useParams();
   const [addedItems, setAddedItems] = useState({});
 
@@ -11,10 +11,20 @@ function CategoryPage() {
     (item) => item.category === category
   );
 
-  const handleAddToCart = (id) => {
-    setAddedItems({ ...addedItems, [id]: true });
+  const handleAddToCart = (product) => {
+    // Check if already in cart
+    const existingIndex = cart.findIndex(item => item.id === product.id);
+    if (existingIndex >= 0) {
+      const newCart = [...cart];
+      newCart[existingIndex].qty += 1;
+      setCart(newCart);
+    } else {
+      setCart([...cart, { ...product, qty: 1 }]);
+    }
+
+    setAddedItems({ ...addedItems, [product.id]: true });
     setTimeout(() => {
-      setAddedItems(prev => ({ ...prev, [id]: false }));
+      setAddedItems(prev => ({ ...prev, [product.id]: false }));
     }, 2000);
   };
 
@@ -107,7 +117,7 @@ function CategoryPage() {
                   </p>
                   
                   <button
-                    onClick={() => handleAddToCart(product.id)}
+                    onClick={() => handleAddToCart(product)}
                     style={{
                       background: addedItems[product.id] ? "var(--accent-color)" : "var(--bg-primary)",
                       color: addedItems[product.id] ? "white" : "var(--text-primary)",
