@@ -1,9 +1,11 @@
 :root {
   --bg-primary: #FAF9F6;
   --bg-secondary: #FFFFFF;
+  --bg-gradient: linear-gradient(135deg, #FAF9F6 0%, #F4EFE6 100%);
   --text-primary: #2C2C2C;
   --text-secondary: #6B6B6B;
   --accent-color: #D4A373;
+  --accent-light: rgba(212, 163, 115, 0.15);
   --accent-hover: #B58555;
   --border-light: #EAE8E3;
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
@@ -21,10 +23,11 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: var(--bg-primary);
+  background: var(--bg-gradient);
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
 }
 
 a {
