@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FiShoppingBag, FiCheck } from "react-icons/fi";
 import { products } from "../data/products";
 
 function CategoryPage({ cart, setCart }) {
   const { category } = useParams();
+  const navigate = useNavigate();
   const [addedItems, setAddedItems] = useState({});
 
   const filteredProducts = products.filter(
@@ -111,44 +112,67 @@ function CategoryPage({ cart, setCart }) {
                   {product.name}
                 </h3>
                 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", paddingTop: "15px", borderTop: "1px solid var(--border-light)" }}>
-                  <p style={{ fontSize: "20px", fontWeight: "600", color: "var(--text-primary)" }}>
+                <div style={{ marginTop: "auto", paddingTop: "15px", borderTop: "1px solid var(--border-light)" }}>
+                  <p style={{ fontSize: "20px", fontWeight: "700", color: "var(--text-primary)", marginBottom: "15px" }}>
                     ₹{product.price}
                   </p>
                   
-                  <button
-                    onClick={() => handleAddToCart(product)}
-                    style={{
-                      background: addedItems[product.id] ? "var(--accent-color)" : "var(--bg-primary)",
-                      color: addedItems[product.id] ? "white" : "var(--text-primary)",
-                      border: `1px solid ${addedItems[product.id] ? "var(--accent-color)" : "var(--border-light)"}`,
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      boxShadow: addedItems[product.id] ? "var(--shadow-sm)" : "none"
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!addedItems[product.id]) {
+                  {cart.some(item => item.id === product.id) ? (
+                    <button
+                      onClick={() => navigate('/cart')}
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        background: "var(--accent-hover)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "8px",
+                        fontSize: "15px",
+                        fontWeight: "600",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        boxShadow: "var(--shadow-sm)"
+                      }}
+                    >
+                      <FiCheck size={18} /> Go to Cart
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                      style={{
+                        width: "100%",
+                        padding: "12px",
+                        background: "var(--bg-primary)",
+                        color: "var(--text-primary)",
+                        border: "1px solid var(--border-light)",
+                        borderRadius: "8px",
+                        fontSize: "15px",
+                        fontWeight: "600",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "8px",
+                        cursor: "pointer",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
                         e.currentTarget.style.background = "var(--text-primary)";
                         e.currentTarget.style.color = "white";
                         e.currentTarget.style.borderColor = "var(--text-primary)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!addedItems[product.id]) {
+                      }}
+                      onMouseLeave={(e) => {
                         e.currentTarget.style.background = "var(--bg-primary)";
                         e.currentTarget.style.color = "var(--text-primary)";
                         e.currentTarget.style.borderColor = "var(--border-light)";
-                      }
-                    }}
-                  >
-                    {addedItems[product.id] ? <FiCheck size={18} /> : <FiShoppingBag size={18} />}
-                  </button>
+                      }}
+                    >
+                      <FiShoppingBag size={18} /> Add to Cart
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
